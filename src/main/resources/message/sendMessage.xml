@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  ~
+  ~ WSO2 Inc. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+
+<template name="sendMessage" xmlns="http://ws.apache.org/ns/synapse">
+    <parameter name="messagingType" description="It must contain exactly one of the token or topic or condition value"/>
+    <parameter name="dryRunMode" description="It is used to send FCM messages in the dry run mode"/>
+    <parameter name="registrationToken"
+               description="If you specify messagingType as token, you must provide this value. FCM API allows you to
+               send messages to individual devices by specifying a registration token for the target device."/>
+    <parameter name="topicName"
+               description="If you specify messagingType as topic, you must provide this value. Name of the topic."/>
+    <parameter name="condition"
+               description="If you specify messagingType as condition, you must provide this value. And if you want to
+               send a message to a combination of topics, you must specify this value."/>
+    <parameter name="dataFieldsOfMessage" description="It defines key-value pair to the message as a data field."/>
+    <parameter name="notificationTitle"
+               description="Sets the notification information (notification title) to be included in the message."/>
+    <parameter name="notificationBody"
+               description="Sets the notification information (notification body) to be included in the message"/>
+    <parameter name="androidPriority" description=" Message priority. Must be one of normal and high values."/>
+    <parameter name="timeToLiveDuration" description="The time-to-live duration of the message."/>
+    <parameter name="restrictedPackageName"
+               description="Package name of the application where the registration tokens must match in order to receive
+                the message."/>
+    <parameter name="collapseKey"
+               description="An identifier of a group of messages that can be collapsed, so that only the last message
+               gets sent when delivery can be resumed."/>
+    <parameter name="dataFieldsOfAndroidConfig"
+               description="A map of key-value pairs where each key and value are strings."/>
+    <parameter name="androidNotificationTitle"
+               description="Sets notification title that is specific to Android notifications."/>
+    <parameter name="androidNotificationBody"
+               description="Sets notification body that is specific to Android notifications."/>
+    <parameter name="androidClickAction"
+               description="Sets the action associated with a user click on the notification."/>
+    <parameter name="androidIcon" description="The notification icon."/>
+    <parameter name="androidColor" description="The notification's icon color."/>
+    <parameter name="androidTag"
+               description="Identifier used to replace existing notifications in the notification drawer."/>
+    <parameter name="androidSound" description="The sound to play when the device receives the notification."/>
+    <parameter name="androidTitleLocalizationKey"
+               description="The key of the title string in the app's string resources to use to localize the title text
+                to the user's current localization."/>
+    <parameter name="androidBodyLocalizationKey"
+               description="The key of the body string in the app's string resources to use to localize the body text
+               to the user's current localization."/>
+    <parameter name="androidTitleLocalizationArgs"
+               description="A list of string values to be used in place of the format specifiers in
+               androidTitleLocalizationKey to use to localize the title text to the user's current localization."/>
+    <parameter name="androidBodyLocalizationArgs"
+               description="A list of string values to be used in place of the format specifiers in
+               androidBodyLocalizationKey to use to localize the body text to the user's current localization."/>
+    <parameter name="apnsHeaders" description="HTTP request headers defined in Apple Push Notification Service."/>
+    <parameter name="apnsCustomData" description="A map of key-value pairs where each key and value are strings."/>
+    <parameter name="apnsBadge"
+               description="Include this key when you want the system to modify the badge of your app icon."/>
+    <parameter name="apnsSound" description="Include this key when you want the system to play a sound."/>
+    <parameter name="apnsContentAvailable"
+               description="Include this key with a value of 1 to configure a background update notification."/>
+    <parameter name="apnsCategory"
+               description="Provide this key with a string value that represents the notification’s type."/>
+    <parameter name="apnsThreadId"
+               description="Provide this key with a string value that represents the app-specific identifier for
+               grouping notifications."/>
+    <parameter name="apnsAlertTitle"
+               description="Include this key when you want the system to display a standard alert."/>
+    <parameter name="apnsAlertBody"
+               description="Include this key when you want the system to display a standard alert."/>
+    <parameter name="webPushHeaders" description="Adds the given key-value pair as a Webpush HTTP header."/>
+    <parameter name="webPushData" description="A map of key-value pairs where each key and value are strings."/>
+    <parameter name="webPushNotificationTitle" description="The title of the notification."/>
+    <parameter name="webPushNotificationBody" description="The body of the notification."/>
+    <parameter name="webPushNotificationIcon"
+               description="It contains the URL of an icon to be displayed as part of the web notification."/>
+    <parameter name="webPushNotificationBadge"
+               description="The URL of the image used to represent the notification when there is not enough space to
+                display the notification itself."/>
+    <parameter name="webPushNotificationImage"
+               description="The URL of an image to be displayed as part of the notification."/>
+    <parameter name="webPushNotificationLanguage" description="Sets the language of the notification."/>
+    <parameter name="webPushNotificationTag" description="Sets an identifying tag on the notification."/>
+    <parameter name="webPushNotificationDirection" description="The text direction of the notification."/>
+    <parameter name="webPushNotificationRenotify"
+               description="Specifies whether the user should be notified after a new notification replaces an old
+               one."/>
+    <parameter name="webPushNotificationInteraction"
+               description="A Boolean indicating that a notification should remain active until the user clicks or
+               dismisses it, rather than closing automatically."/>
+    <parameter name="webPushNotificationSilent" description="Specifies whether the notification should be silent."/>
+    <parameter name="webPushNotificationTimestamp"
+               description="Specifies the time at which a notification is created or applicable."/>
+    <parameter name="webPushNotificationVibrate"
+               description="Specifies a vibration pattern for devices with vibration hardware to emit."/>
+    <sequence>
+        <property name="messagingType" expression="$func:messagingType"/>
+        <property name="dryRunMode" expression="$func:dryRunMode"/>
+        <property name="registrationToken" expression="$func:registrationToken"/>
+        <property name="topicName" expression="$func:topicName"/>
+        <property name="condition" expression="$func:condition"/>
+        <property name="dataFieldsOfMessage" expression="$func:dataFieldsOfMessage"/>
+        <property name="notificationTitle" expression="$func:notificationTitle"/>
+        <property name="notificationBody" expression="$func:notificationBody"/>
+        <property name="androidPriority" expression="$func:androidPriority"/>
+        <property name="timeToLiveDuration" expression="$func:timeToLiveDuration"/>
+        <property name="restrictedPackageName" expression="$func:restrictedPackageName"/>
+        <property name="collapseKey" expression="$func:collapseKey"/>
+        <property name="dataFieldsOfAndroidConfig" expression="$func:dataFieldsOfAndroidConfig"/>
+        <property name="androidNotificationTitle" expression="$func:androidNotificationTitle"/>
+        <property name="androidNotificationBody" expression="$func:androidNotificationBody"/>
+        <property name="androidClickAction" expression="$func:androidClickAction"/>
+        <property name="androidIcon" expression="$func:androidIcon"/>
+        <property name="androidColor" expression="$func:androidColor"/>
+        <property name="androidTag" expression="$func:androidTag"/>
+        <property name="androidSound" expression="$func:androidSound"/>
+        <property name="androidTitleLocalizationKey" expression="$func:androidTitleLocalizationKey"/>
+        <property name="androidBodyLocalizationKey" expression="$func:androidBodyLocalizationKey"/>
+        <property name="androidTitleLocalizationArgs" expression="$func:androidTitleLocalizationArgs"/>
+        <property name="androidBodyLocalizationArgs" expression="$func:androidBodyLocalizationArgs"/>
+        <property name="apnsHeaders" expression="$func:apnsHeaders"/>
+        <property name="apnsCustomData" expression="$func:apnsCustomData"/>
+        <property name="apnsBadge" expression="$func:apnsBadge"/>
+        <property name="apnsSound" expression="$func:apnsSound"/>
+        <property name="apnsContentAvailable" expression="$func:apnsContentAvailable"/>
+        <property name="apnsCategory" expression="$func:apnsCategory"/>
+        <property name="apnsThreadId" expression="$func:apnsThreadId"/>
+        <property name="apnsAlertTitle" expression="$func:apnsAlertTitle"/>
+        <property name="apnsAlertBody" expression="$func:apnsAlertBody"/>
+        <property name="webPushHeaders" expression="$func:webPushHeaders"/>
+        <property name="webPushData" expression="$func:webPushData"/>
+        <property name="webPushNotificationTitle" expression="$func:webPushNotificationTitle"/>
+        <property name="webPushNotificationBody" expression="$func:webPushNotificationBody"/>
+        <property name="webPushNotificationIcon" expression="$func:webPushNotificationIcon"/>
+        <property name="webPushNotificationBadge" expression="$func:webPushNotificationBadge"/>
+        <property name="webPushNotificationImage" expression="$func:webPushNotificationImage"/>
+        <property name="webPushNotificationLanguage" expression="$func:webPushNotificationLanguage"/>
+        <property name="webPushNotificationTag" expression="$func:webPushNotificationTag"/>
+        <property name="webPushNotificationDirection" expression="$func:webPushNotificationDirection"/>
+        <property name="webPushNotificationRenotify" expression="$func:webPushNotificationRenotify"/>
+        <property name="webPushNotificationInteraction" expression="$func:webPushNotificationInteraction"/>
+        <property name="webPushNotificationSilent" expression="$func:webPushNotificationSilent"/>
+        <property name="webPushNotificationTimestamp" expression="$func:webPushNotificationTimestamp"/>
+        <property name="webPushNotificationVibrate" expression="$func:webPushNotificationVibrate"/>
+        <class name="org.wso2.carbon.connector.googlefirebase.SendMessage"/>
+    </sequence>
+</template>
