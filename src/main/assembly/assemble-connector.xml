@@ -21,7 +21,8 @@
     <formats>
         <format>zip</format>
     </formats>
-
+    <id>connector</id>
+    
     <includeBaseDirectory>false</includeBaseDirectory>
 
     <fileSets>

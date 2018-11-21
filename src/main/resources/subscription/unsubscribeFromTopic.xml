@@ -24,6 +24,6 @@
     <sequence>
         <property name="topicName" expression="$func:topicName"/>
         <property name="tokenList" expression="$func:tokenList"/>
-        <class name="org.wso2.carbon.connector.googlefirebase.UnsubscribeFromTopic"/>
+        <class name="org.wso2.carbon.connector.googlefirebase.TopicUnsubscriber"/>
     </sequence>
 </template>

@@ -41,6 +41,7 @@
         <bouncycastle.version>1.55</bouncycastle.version>
         <rampart.apache.version>1.6.1-wso2v18</rampart.apache.version>
         <rampart.wso2.version>1.6.1.wso2v18</rampart.wso2.version>
+        <integration.base.version>1.0.3</integration.base.version>
         <firebase.version>6.5.0</firebase.version>
         <google.auth.version>0.11.0</google.auth.version>
         <api.common.version>1.7.0</api.common.version>
@@ -195,7 +196,7 @@
         <dependency>
             <groupId>org.wso2.esb.integration</groupId>
             <artifactId>integration-base</artifactId>
-            <version>1.0.3</version>
+            <version>${integration.base.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

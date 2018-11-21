@@ -156,6 +156,6 @@
         <property name="webPushNotificationSilent" expression="$func:webPushNotificationSilent"/>
         <property name="webPushNotificationTimestamp" expression="$func:webPushNotificationTimestamp"/>
         <property name="webPushNotificationVibrate" expression="$func:webPushNotificationVibrate"/>
-        <class name="org.wso2.carbon.connector.googlefirebase.SendMessage"/>
+        <class name="org.wso2.carbon.connector.googlefirebase.MessageSender"/>
     </sequence>
 </template>

@@ -24,41 +24,39 @@ import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 import org.wso2.carbon.connector.core.Connector;
+import org.wso2.carbon.connector.googlefirebase.utils.FirebaseUtils;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * It allows you to unsubscribe devices from a topic by passing list of registration tokens.
+ * It allows you to subscribe devices to a topic by providing the registration tokens for the devices to subscribe.
  */
-public class UnsubscribeFromTopic extends AbstractConnector implements Connector {
+public class TopicSubscriber extends AbstractConnector implements Connector {
 
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {
 
         String topicName = (String) getParameter(messageContext, FirebaseConstants.TOPIC_NAME);
         String tokenList = (String) getParameter(messageContext, FirebaseConstants.TOKEN_LIST);
-
         // These registration tokens come from the client FCM SDKs.
         List<String> registrationTokens = Arrays.asList(tokenList.split(","));
 
-        // Unsubscribe the devices corresponding to the registration tokens from the topic.
+        // Subscribe the devices corresponding to the registration tokens to the topic.
         TopicManagementResponse response;
         try {
             if (log.isDebugEnabled()) {
-                log.debug(String.format("Started to unsubscribe the list of tokens %s from the topic %s.", tokenList,
-                        topicName));
+                log.debug(String.format("Started to subscribe the topic %s for list of tokens %s.", topicName,
+                        tokenList));
             }
-            response = FirebaseMessaging.getInstance().unsubscribeFromTopic(registrationTokens, topicName);
+            response = FirebaseMessaging.getInstance().subscribeToTopic(registrationTokens, topicName);
             FirebaseUtils.buildSubscriptionResponse(messageContext, response);
         } catch (IllegalArgumentException e) {
             FirebaseUtils.buildErrorResponse(messageContext, e.getMessage());
             log.error("Invalid argument specified.", e);
         } catch (FirebaseMessagingException e) {
             FirebaseUtils.buildErrorResponse(messageContext, e.getCause().getMessage());
-            log.error("Error occurred while un subscribing the topic.", e);
+            log.error("Error occurred while subscribing the topic.", e);
         }
     }
 }

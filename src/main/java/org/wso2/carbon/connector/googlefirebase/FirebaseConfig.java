@@ -24,11 +24,10 @@ import org.apache.synapse.MessageContext;
 import org.json.JSONObject;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.Connector;
+import org.wso2.carbon.connector.googlefirebase.utils.FirebaseUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Initializes the FirebaseApp (if not already initialized).
@@ -93,8 +92,7 @@ public class FirebaseConfig extends AbstractConnector implements Connector {
                             "account's credentials");
                 }
             } catch (IOException e) {
-                FirebaseUtils.buildErrorResponse(messageContext, e.getCause().getMessage());
-                log.error("Failed to read service account credentials from stream.", e);
+                FirebaseUtils.handleException("Failed to read service account credentials from stream. ", e);
             }
         }
     }

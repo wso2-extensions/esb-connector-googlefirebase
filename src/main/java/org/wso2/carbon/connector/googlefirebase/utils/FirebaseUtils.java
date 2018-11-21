@@ -15,18 +15,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.wso2.carbon.connector.googlefirebase;
+package org.wso2.carbon.connector.googlefirebase.utils;
 
-import com.google.firebase.messaging.AndroidConfig;
-import com.google.firebase.messaging.AndroidNotification;
-import com.google.firebase.messaging.ApnsConfig;
-import com.google.firebase.messaging.Aps;
-import com.google.firebase.messaging.ApsAlert;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.TopicManagementResponse;
-import com.google.firebase.messaging.WebpushConfig;
-import com.google.firebase.messaging.WebpushNotification;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -37,14 +30,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseException;
+import org.wso2.carbon.connector.googlefirebase.FirebaseConstants;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,7 +56,7 @@ public class FirebaseUtils {
      *                       the firebase message.
      * @return Firebase message.
      */
-    public static Message buildFirebaseMessage(MessageContext messageContext) throws IllegalArgumentException {
+    public static Message buildFirebaseMessage(MessageContext messageContext) {
 
         //Get the messaging type. It must be one of the "token" or "topic" or "condition"
         String messagingType = (String) messageContext.getProperty(FirebaseConstants.MESSAGING_TYPE);
@@ -83,17 +73,6 @@ public class FirebaseUtils {
         }
 
         Message.Builder message = Message.builder();
-        //Adds custom key-value pair to the firebase message as a data field.
-        setDataFields(messageContext, message);
-        //Sets the notification information to be included in the firebase message.
-        setNotificationInfo(messageContext, message);
-        //Sets the Android-specific information to be included in the firebase message.
-        setAndroidSpecificInfo(messageContext, message);
-        //Sets the information specific to APNS (Apple Push Notification Service) to firebase message.
-        setApnsSpecificInfo(messageContext, message);
-        //Sets the Webpush-specific information to be included in the firebase message.
-        setWebPushSpecificInfo(messageContext, message);
-
         switch (messagingType.toLowerCase()) {
             case FirebaseConstants.MESSAGING_TYPE_TOKEN:
                 if (StringUtils.isEmpty(registrationToken)) {
@@ -118,6 +97,17 @@ public class FirebaseUtils {
                 handleException("Un supported messaging Type. It must contain exactly one of the token, " +
                         "topic or condition fields.");
         }
+
+        //Adds custom key-value pair to the firebase message as a data field.
+        setDataFields(messageContext, message);
+        //Sets the notification information to be included in the firebase message.
+        setNotificationInfo(messageContext, message);
+        //Sets the Android-specific information to be included in the firebase message.
+        setAndroidSpecificInfo(messageContext, message);
+        //Sets the information specific to APNS (Apple Push Notification Service) to firebase message.
+        setApnsSpecificInfo(messageContext, message);
+        //Sets the Webpush-specific information to be included in the firebase message.
+        setWebPushSpecificInfo(messageContext, message);
 
         return message.build();
     }
@@ -165,138 +155,87 @@ public class FirebaseUtils {
      * @param messageContext The message context that holds the properties which is needed to build the Webpush config.
      * @param message        Firebase message.
      */
-    private static void setWebPushSpecificInfo(MessageContext messageContext, Message.Builder message)
-            throws IllegalArgumentException {
+    private static void setWebPushSpecificInfo(MessageContext messageContext, Message.Builder message) {
 
-        // Webpush message
-        WebpushConfig.Builder webpushConfig = WebpushConfig.builder();
+        // Build Webpush message
+        WebpushConfigBean webpushConfigBean = new WebpushConfigBean();
+        WebpushNotificationBean webpushNotificationBean = new WebpushNotificationBean();
         //Set headers
         String webPushHeaders = (String) messageContext.getProperty(FirebaseConstants.WEB_PUSH_HEADERS);
-        if (StringUtils.isNotEmpty(webPushHeaders)) {
-            Map<String, String> kayValuePairs =
-                    Stream.of(webPushHeaders.split(","))
-                            .map(element -> element.split(":"))
-                            .collect(Collectors.toMap(e -> e[0].trim(), e -> e[1].trim()));
-            kayValuePairs.forEach(webpushConfig::putHeader);
-        }
+        webpushConfigBean.setWebPushHeaders(webPushHeaders);
         //Set data
         String webPushData = (String) messageContext.getProperty(FirebaseConstants.WEB_PUSH_DATA);
-        if (StringUtils.isNotEmpty(webPushData)) {
-            Map<String, String> kayValuePairs =
-                    Stream.of(webPushData.split(","))
-                            .map(element -> element.split(":"))
-                            .collect(Collectors.toMap(e -> e[0].trim(), e -> e[1].trim()));
-            kayValuePairs.forEach(webpushConfig::putData);
-        }
+        webpushConfigBean.setWebPushData(webPushData);
 
-        webpushConfig.setNotification(getWebPushNotificationInfo(messageContext).build());
-        message.setWebpushConfig(webpushConfig.build());
-    }
-
-    /**
-     * Sets the Webpush Notification information to be included in the firebase message.
-     *
-     * @param messageContext The message context that holds the properties which is needed to build the Webpush
-     *                       Notification.
-     * @return WebpushNotification.Builder object.
-     */
-    private static WebpushNotification.Builder getWebPushNotificationInfo(MessageContext messageContext)
-            throws NumberFormatException {
-
-        WebpushNotification.Builder webPushNotification = WebpushNotification.builder();
+        //Sets the Webpush Notification information to be included in the firebase message.
         String webPushNotificationTitle = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_TITLE);
-        if (StringUtils.isNotEmpty(webPushNotificationTitle)) {
-            webPushNotification.setTitle(webPushNotificationTitle);
-        }
+        webpushNotificationBean.setTitle(webPushNotificationTitle);
+
         String webPushNotificationBody = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_BODY);
-        if (StringUtils.isNotEmpty(webPushNotificationBody)) {
-            webPushNotification.setBody(webPushNotificationBody);
-        }
+        webpushNotificationBean.setBody(webPushNotificationBody);
+
         String webPushNotificationIcon = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_ICON);
-        if (StringUtils.isNotEmpty(webPushNotificationIcon)) {
-            webPushNotification.setIcon(webPushNotificationIcon);
-        }
+        webpushNotificationBean.setIcon(webPushNotificationIcon);
+
         String webPushNotificationBadge = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_BADGE);
-        if (StringUtils.isNotEmpty(webPushNotificationBadge)) {
-            webPushNotification.setBadge(webPushNotificationBadge);
-        }
+        webpushNotificationBean.setBadge(webPushNotificationBadge);
+
         String webPushNotificationImage = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_IMAGE);
-        if (StringUtils.isNotEmpty(webPushNotificationImage)) {
-            webPushNotification.setImage(webPushNotificationImage);
-        }
+        webpushNotificationBean.setImage(webPushNotificationImage);
+
         String webPushNotificationLanguage = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_LANGUAGE);
-        if (StringUtils.isNotEmpty(webPushNotificationLanguage)) {
-            webPushNotification.setLanguage(webPushNotificationLanguage);
-        }
+        webpushNotificationBean.setLanguage(webPushNotificationLanguage);
+
         String webPushNotificationTag = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_TAG);
-        if (StringUtils.isNotEmpty(webPushNotificationTag)) {
-            webPushNotification.setTag(webPushNotificationTag);
-        }
+        webpushNotificationBean.setTag(webPushNotificationTag);
+
         String webPushNotificationDirection = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_DIRECTION);
-        if (StringUtils.isNotEmpty(webPushNotificationDirection)) {
-            webPushNotification.setDirection(getWebpushNotificationDirection(webPushNotificationDirection));
-        }
+        webpushNotificationBean.setDirection(webPushNotificationDirection);
+
         String webPushNotificationRenotify = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_RENOTIFY);
-        if (StringUtils.isNotEmpty(webPushNotificationRenotify)) {
-            webPushNotification.setRenotify(Boolean.parseBoolean(webPushNotificationRenotify));
-        }
+        webpushNotificationBean.setRenotify(webPushNotificationRenotify);
+
         String webPushNotificationInteraction = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_INTERACTION);
-        if (StringUtils.isNotEmpty(webPushNotificationInteraction)) {
-            webPushNotification.setRequireInteraction(Boolean.parseBoolean(webPushNotificationInteraction));
-        }
+        webpushNotificationBean.setRequireInteraction(webPushNotificationInteraction);
+
         String webPushNotificationSilent = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_SILENT);
-        if (StringUtils.isNotEmpty(webPushNotificationSilent)) {
-            webPushNotification.setSilent(Boolean.parseBoolean(webPushNotificationSilent));
-        }
+        webpushNotificationBean.setSilent(webPushNotificationSilent);
+
         String webPushNotificationTimestamp = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_TIMESTAMP);
-        if (StringUtils.isNotEmpty(webPushNotificationTimestamp)) {
-            webPushNotification.setTimestampMillis(Long.parseLong(webPushNotificationTimestamp));
-        }
+        webpushNotificationBean.setTimestampMillis(webPushNotificationTimestamp);
+
         String webPushNotificationVibrate = (String) messageContext.getProperty(
                 FirebaseConstants.WEB_PUSH_NOTIFICATION_VIBRATE);
-        if (StringUtils.isNotEmpty(webPushNotificationVibrate)) {
-            int[] numbers = Arrays.stream(webPushNotificationVibrate.split(","))
-                    .map(String::trim)
-                    .mapToInt(Integer::parseInt).toArray();
-            webPushNotification.setVibrate(numbers);
-        }
-        return webPushNotification;
-    }
+        webpushNotificationBean.setVibrate(webPushNotificationVibrate);
 
-    /**
-     * Get webpush notification direction value.
-     *
-     * @param webPushNotificationDirection User input direction value.
-     * @return WebpushNotification.Direction object.
-     */
-    private static WebpushNotification.Direction getWebpushNotificationDirection(String webPushNotificationDirection) {
-
-        WebpushNotification.Direction direction = null;
-        if (webPushNotificationDirection.equalsIgnoreCase(FirebaseConstants.AUTO)) {
-            direction = WebpushNotification.Direction.AUTO;
-        } else if (webPushNotificationDirection.equalsIgnoreCase(FirebaseConstants.LEFT_TO_RIGHT) ||
-                webPushNotificationDirection.equalsIgnoreCase(FirebaseConstants.LTR)) {
-            direction = WebpushNotification.Direction.LEFT_TO_RIGHT;
-        } else if (webPushNotificationDirection.equalsIgnoreCase(FirebaseConstants.RIGHT_TO_LEFT) ||
-                webPushNotificationDirection.equalsIgnoreCase(FirebaseConstants.RTL)) {
-            direction = WebpushNotification.Direction.RIGHT_TO_LEFT;
-        } else {
-            log.error(String.format("Provided web push notification direction value %s is wrong",
-                    webPushNotificationDirection));
+        boolean isWebpushConfigExist = false;
+        if (StringUtils.isNotEmpty(webPushNotificationTitle) || StringUtils.isNotEmpty(webPushNotificationBody) ||
+                StringUtils.isNotEmpty(webPushNotificationIcon) || StringUtils.isNotEmpty(webPushNotificationBadge) ||
+                StringUtils.isNotEmpty(webPushNotificationImage) || StringUtils.isNotEmpty(webPushNotificationLanguage)
+                || StringUtils.isNotEmpty(webPushNotificationTag) || StringUtils.isNotEmpty(
+                webPushNotificationDirection) || StringUtils.isNotEmpty(webPushNotificationRenotify) ||
+                StringUtils.isNotEmpty(webPushNotificationInteraction) || StringUtils.isNotEmpty(
+                webPushNotificationSilent) || StringUtils.isNotEmpty(webPushNotificationTimestamp) ||
+                StringUtils.isNotEmpty(webPushNotificationVibrate)) {
+            isWebpushConfigExist = true;
+            webpushConfigBean.setNotification(webpushNotificationBean.getWebPushNotificationInfo().build());
         }
-        return direction;
+
+        if (isWebpushConfigExist || StringUtils.isNotEmpty(webPushHeaders) || StringUtils.isNotEmpty(webPushData)) {
+            message.setWebpushConfig(webpushConfigBean.getWebpushConfig().build());
+        }
     }
 
     /**
@@ -305,109 +244,81 @@ public class FirebaseUtils {
      * @param messageContext The message context that holds the properties which is needed to build the Android config.
      * @param message        Firebase message.
      */
-    private static void setAndroidSpecificInfo(MessageContext messageContext, Message.Builder message)
-            throws IllegalArgumentException {
-        // Android message
+    private static void setAndroidSpecificInfo(MessageContext messageContext, Message.Builder message) {
+
+        // Build Android message
+        AndroidConfigBean androidConfigBean = new AndroidConfigBean();
+        AndroidNotificationBean androidNotificationBean = new AndroidNotificationBean();
         String androidPriority = (String) messageContext.getProperty(FirebaseConstants.ANDROID_PRIORITY);
-        AndroidConfig.Builder androidConfig = AndroidConfig.builder();
-        if (StringUtils.isNotEmpty(androidPriority)) {
-            if (androidPriority.equalsIgnoreCase(FirebaseConstants.HIGH)) {
-                androidConfig.setPriority(AndroidConfig.Priority.HIGH);
-            } else if (androidPriority.equalsIgnoreCase(FirebaseConstants.NORMAL)) {
-                androidConfig.setPriority(AndroidConfig.Priority.NORMAL);
-            } else {
-                log.error(String.format("Provided Priority level value %s is wrong", androidPriority));
-            }
-        }
+        androidConfigBean.setPriority(androidPriority);
+
         String timeToLive = (String) messageContext.getProperty(FirebaseConstants.TIME_TO_LIVE_DURATION);
-        if (StringUtils.isNotEmpty(timeToLive)) {
-            long timeToLiveDuration = Long.parseLong(timeToLive);
-            androidConfig.setTtl(TimeUnit.SECONDS.toMillis(timeToLiveDuration));
-        }
+        androidConfigBean.setTtl(timeToLive);
+
         String restrictedPackageName = (String) messageContext.getProperty(FirebaseConstants.PACKAGE_NAME);
-        if (StringUtils.isNotEmpty(restrictedPackageName)) {
-            androidConfig.setRestrictedPackageName(restrictedPackageName);
-        }
+        androidConfigBean.setRestrictedPackageName(restrictedPackageName);
+
         String collapseKey = (String) messageContext.getProperty(FirebaseConstants.COLLAPSE_KAY);
-        if (StringUtils.isNotEmpty(collapseKey)) {
-            androidConfig.setCollapseKey(collapseKey);
-        }
-        //A map of key-value pairs where each key and value are strings.
-        //Set data message in android config
+        androidConfigBean.setCollapseKey(collapseKey);
+
         String dataFieldsOfAndroidConfig = (String) messageContext.getProperty(FirebaseConstants.DATA_FIELDS_ANDROID);
-        if (StringUtils.isNotEmpty(dataFieldsOfAndroidConfig)) {
-            Map<String, String> kayValuePairs =
-                    Stream.of(dataFieldsOfAndroidConfig.split(","))
-                            .map(element -> element.split(":"))
-                            .collect(Collectors.toMap(e -> e[0].trim(), e -> e[1].trim()));
-            kayValuePairs.forEach(androidConfig::putData);
-        }
-        //Set notification message in android config
-        androidConfig.setNotification(getAndroidNotificationInfo(messageContext).build());
-        message.setAndroidConfig(androidConfig.build());
-    }
+        androidConfigBean.setData(dataFieldsOfAndroidConfig);
 
-    /**
-     * Sets the Android Notification information to be included in the firebase message.
-     *
-     * @param messageContext The message context that holds the properties which is needed to build the Android
-     *                       Notification.
-     * @return AndroidNotification.Builder object.
-     */
-    private static AndroidNotification.Builder getAndroidNotificationInfo(MessageContext messageContext) {
-
-        AndroidNotification.Builder androidNotification = AndroidNotification.builder();
         String androidNotificationTitle = (String) messageContext.getProperty(
                 FirebaseConstants.ANDROID_NOTIFICATION_TITLE);
-        if (StringUtils.isNotEmpty(androidNotificationTitle)) {
-            androidNotification.setTitle(androidNotificationTitle);
-        }
+        androidNotificationBean.setTitle(androidNotificationTitle);
+
         String androidNotificationBody = (String) messageContext.getProperty(
                 FirebaseConstants.ANDROID_NOTIFICATION_BODY);
-        if (StringUtils.isNotEmpty(androidNotificationBody)) {
-            androidNotification.setBody(androidNotificationBody);
-        }
+        androidNotificationBean.setBody(androidNotificationBody);
+
         String androidClickAction = (String) messageContext.getProperty(FirebaseConstants.ANDROID_CLICK_ACTION);
-        if (StringUtils.isNotEmpty(androidClickAction)) {
-            androidNotification.setClickAction(androidClickAction);
-        }
+        androidNotificationBean.setClickAction(androidClickAction);
+
         String androidIcon = (String) messageContext.getProperty(FirebaseConstants.ANDROID_ICON);
-        if (StringUtils.isNotEmpty(androidIcon)) {
-            androidNotification.setIcon(androidIcon);
-        }
+        androidNotificationBean.setIcon(androidIcon);
+
         String androidColor = (String) messageContext.getProperty(FirebaseConstants.ANDROID_COLOR);
-        if (StringUtils.isNotEmpty(androidColor)) {
-            androidNotification.setColor(androidColor);
-        }
+        androidNotificationBean.setColor(androidColor);
+
         String androidTag = (String) messageContext.getProperty(FirebaseConstants.ANDROID_TAG);
-        if (StringUtils.isNotEmpty(androidTag)) {
-            androidNotification.setTag(androidTag);
-        }
+        androidNotificationBean.setTag(androidTag);
+
         String androidSound = (String) messageContext.getProperty(FirebaseConstants.ANDROID_SOUND);
-        if (StringUtils.isNotEmpty(androidSound)) {
-            androidNotification.setSound(androidSound);
-        }
+        androidNotificationBean.setSound(androidSound);
+
         String androidTitleLocalizationKey = (String) messageContext.getProperty(
                 FirebaseConstants.ANDROID_TITLE_LOCALIZATION_KEY);
-        if (StringUtils.isNotEmpty(androidTitleLocalizationKey)) {
-            androidNotification.setTitleLocalizationKey(androidTitleLocalizationKey);
-        }
+        androidNotificationBean.setTitleLocalizationKey(androidTitleLocalizationKey);
+
         String androidBodyLocalizationKey = (String) messageContext.getProperty(
                 FirebaseConstants.ANDROID_BODY_LOCALIZATION_KEY);
-        if (StringUtils.isNotEmpty(androidBodyLocalizationKey)) {
-            androidNotification.setBodyLocalizationKey(androidBodyLocalizationKey);
-        }
+        androidNotificationBean.setBodyLocalizationKey(androidBodyLocalizationKey);
+
         String androidTitleLocalizationArgs = (String) messageContext.getProperty(
                 FirebaseConstants.ANDROID_TITLE_LOCALIZATION_ARGS);
-        if (StringUtils.isNotEmpty(androidTitleLocalizationArgs)) {
-            androidNotification.addAllTitleLocalizationArgs(Arrays.asList(androidTitleLocalizationArgs.split(",")));
-        }
+        androidNotificationBean.addAllTitleLocalizationArgs(androidTitleLocalizationArgs);
+
         String androidBodyLocalizationArgs = (String) messageContext.getProperty(
                 FirebaseConstants.ANDROID_BODY_LOCALIZATION_ARGS);
-        if (StringUtils.isNotEmpty(androidBodyLocalizationArgs)) {
-            androidNotification.addAllBodyLocalizationArgs(Arrays.asList(androidBodyLocalizationArgs.split(",")));
+        androidNotificationBean.addAllBodyLocalizationArgs(androidBodyLocalizationArgs);
+
+        boolean isNotificationExist = false;
+        if (StringUtils.isNotEmpty(androidNotificationTitle) || StringUtils.isNotEmpty(androidNotificationBody) ||
+                StringUtils.isNotEmpty(androidClickAction) || StringUtils.isNotEmpty(androidIcon) ||
+                StringUtils.isNotEmpty(androidColor) || StringUtils.isNotEmpty(androidTag) || StringUtils.isNotEmpty(
+                androidSound) || StringUtils.isNotEmpty(androidTitleLocalizationKey) || StringUtils.isNotEmpty(
+                androidBodyLocalizationKey) || StringUtils.isNotEmpty(androidTitleLocalizationArgs)
+                || StringUtils.isNotEmpty(androidBodyLocalizationArgs)) {
+            //Set notification message in android config
+            isNotificationExist = true;
+            androidConfigBean.setNotification(androidNotificationBean.getAndroidNotificationInfo().build());
         }
-        return androidNotification;
+        if (isNotificationExist || StringUtils.isNotEmpty(androidPriority) || StringUtils.isNotEmpty(timeToLive) ||
+                StringUtils.isNotEmpty(restrictedPackageName) || StringUtils.isNotEmpty(collapseKey) ||
+                StringUtils.isNotEmpty(dataFieldsOfAndroidConfig)) {
+            message.setAndroidConfig(androidConfigBean.getAndroidConfig().build());
+        }
     }
 
     /**
@@ -416,61 +327,55 @@ public class FirebaseUtils {
      * @param messageContext The message context that holds the properties which is needed to build the apns config.
      * @param message        Firebase message.
      */
-    private static void setApnsSpecificInfo(MessageContext messageContext, Message.Builder message)
-            throws IllegalArgumentException {
-        // APNS message
-        ApnsConfig.Builder apnsConfig = ApnsConfig.builder();
-        //Set headers
+    private static void setApnsSpecificInfo(MessageContext messageContext, Message.Builder message) {
+
+        // Build APNS message
+        ApnsConfigBean apnsConfigBean = new ApnsConfigBean();
+
         String apnsHeaders = (String) messageContext.getProperty(FirebaseConstants.APNS_HEADERS);
-        if (StringUtils.isNotEmpty(apnsHeaders)) {
-            Map<String, String> kayValuePairs =
-                    Stream.of(apnsHeaders.split(","))
-                            .map(element -> element.split(":"))
-                            .collect(Collectors.toMap(e -> e[0].trim(), e -> e[1].trim()));
-            kayValuePairs.forEach(apnsConfig::putHeader);
-        }
-        //Set custom data
+        apnsConfigBean.setHeader(apnsHeaders);
+
         String apnsCustomData = (String) messageContext.getProperty(FirebaseConstants.APNS_CUSTOM_DATA);
-        if (StringUtils.isNotEmpty(apnsCustomData)) {
-            Map<String, String> kayValuePairs =
-                    Stream.of(apnsCustomData.split(","))
-                            .map(element -> element.split(":"))
-                            .collect(Collectors.toMap(e -> e[0].trim(), e -> e[1].trim()));
-            kayValuePairs.forEach(apnsConfig::putCustomData);
-        }
-        Aps.Builder aps = Aps.builder();
+        apnsConfigBean.setCustomData(apnsCustomData);
+
+        ApsBean apsBean = new ApsBean();
         String apnsBadge = (String) messageContext.getProperty(FirebaseConstants.APNS_BADGE);
-        if (StringUtils.isNotEmpty(apnsBadge)) {
-            aps.setBadge(Integer.parseInt(apnsBadge));
-        }
+        apsBean.setBadge(apnsBadge);
+
         String apnsSound = (String) messageContext.getProperty(FirebaseConstants.APNS_SOUND);
-        if (StringUtils.isNotEmpty(apnsSound)) {
-            aps.setSound(apnsSound);
-        }
+        apsBean.setSound(apnsSound);
+
         String apnsContentAvailable = (String) messageContext.getProperty(FirebaseConstants.APNS_CONTENT_AVAILABLE);
-        if (StringUtils.isNotEmpty(apnsContentAvailable)) {
-            aps.setContentAvailable(Boolean.parseBoolean(apnsContentAvailable));
-        }
+        apsBean.setContentAvailable(apnsContentAvailable);
+
         String apnsCategory = (String) messageContext.getProperty(FirebaseConstants.APNS_CATEGORY);
-        if (StringUtils.isNotEmpty(apnsCategory)) {
-            aps.setCategory(apnsCategory);
-        }
+        apsBean.setCategory(apnsCategory);
+
         String apnsThreadId = (String) messageContext.getProperty(FirebaseConstants.APNS_THREAD_ID);
-        if (StringUtils.isNotEmpty(apnsThreadId)) {
-            aps.setThreadId(apnsThreadId);
-        }
-        ApsAlert.Builder apsAlert = ApsAlert.builder();
+        apsBean.setThreadId(apnsThreadId);
+
+        ApsAlertBean apsAlertBean = new ApsAlertBean();
         String apnsAlertTitle = (String) messageContext.getProperty(FirebaseConstants.APNS_ALERT_TITLE);
-        if (StringUtils.isNotEmpty(apnsAlertTitle)) {
-            apsAlert.setTitle(apnsAlertTitle);
-        }
+        apsAlertBean.setTitle(apnsAlertTitle);
+
         String apnsAlertBody = (String) messageContext.getProperty(FirebaseConstants.APNS_ALERT_BODY);
-        if (StringUtils.isNotEmpty(apnsAlertBody)) {
-            apsAlert.setBody(apnsAlertBody);
+        apsAlertBean.setBody(apnsAlertBody);
+
+        boolean isAlertExist = false;
+        boolean isApsExist = false;
+        if (StringUtils.isNotEmpty(apnsAlertTitle) || StringUtils.isNotEmpty(apnsAlertBody)) {
+            isAlertExist = true;
+            apsBean.setAlert(apsAlertBean.getApsAlert().build());
         }
-        aps.setAlert(apsAlert.build());
-        apnsConfig.setAps(aps.build());
-        message.setApnsConfig(apnsConfig.build());
+        if ((StringUtils.isNotEmpty(apnsBadge) || StringUtils.isNotEmpty(apnsSound) || StringUtils.isNotEmpty(
+                apnsContentAvailable) || StringUtils.isNotEmpty(apnsCategory) || StringUtils.isNotEmpty(apnsThreadId))
+                || isAlertExist) {
+            isApsExist = true;
+            apnsConfigBean.setAps(apsBean.getAps().build());
+        }
+        if (isApsExist || StringUtils.isNotEmpty(apnsHeaders) || StringUtils.isNotEmpty(apnsCustomData)) {
+            message.setApnsConfig(apnsConfigBean.getApnsConfig().build());
+        }
     }
 
     /**
@@ -514,7 +419,7 @@ public class FirebaseUtils {
      * @param msg error message as a string.
      * @throws SynapseException If error occurred.
      */
-    protected static void handleException(String msg) throws SynapseException {
+    public static void handleException(String msg) throws SynapseException {
 
         log.error(msg);
         throw new SynapseException(msg);
@@ -546,5 +451,18 @@ public class FirebaseUtils {
         result.put(FirebaseConstants.FAIL_COUNT, response.getFailureCount());
         result.put(FirebaseConstants.ERRORS, response.getErrors());
         FirebaseUtils.generateResult(messageContext, result);
+    }
+
+    /**
+     * Common method to throw exceptions.
+     *
+     * @param msg this parameter contain error message that we need to throw.
+     * @param e   Exception object.
+     * @throws SynapseException If error occurred.
+     */
+    public static void handleException(String msg, Exception e) throws SynapseException {
+
+        log.error(msg + e);
+        throw new SynapseException(msg, e);
     }
 }

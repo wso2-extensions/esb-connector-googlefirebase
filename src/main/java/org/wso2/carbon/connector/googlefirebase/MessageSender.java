@@ -25,16 +25,15 @@ import org.apache.synapse.MessageContext;
 import org.wso2.carbon.connector.core.AbstractConnector;
 import org.wso2.carbon.connector.core.ConnectException;
 import org.wso2.carbon.connector.core.Connector;
+import org.wso2.carbon.connector.googlefirebase.utils.FirebaseUtils;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * It allows you to send Firebase messages to end-user devices.
  */
-public class SendMessage extends AbstractConnector implements Connector {
+public class MessageSender extends AbstractConnector implements Connector {
 
     @Override
     public void connect(MessageContext messageContext) throws ConnectException {
