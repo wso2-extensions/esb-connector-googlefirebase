@@ -15,7 +15,7 @@ It allows you to access the [Firebase Cloud Messaging (FCM)](https://firebase.go
 
 ###### Download and install the connector
 
-1. Download the connector from [WSO2 Store](https://store.wso2.com/store/assets/esbconnector) by clicking the Download Connector button.
+1. Download the connector from [WSO2 Store](https://store.wso2.com/store/assets/esbconnector/details/64a497ef-ca4c-4210-9215-da7946888a45) by clicking the Download Connector button.
 2. Then you can follow this [Documentation](https://docs.wso2.com/display/EI640/Working+with+Connectors+via+the+Management+Console) to add and enable the connector via the Management Console in your EI instance.
 3. For more information on using connectors and their operations in your EI configurations, see [Using a Connector](https://docs.wso2.com/display/EI640/Using+a+Connector).
 4. If you want to work with connectors via EI tooling, see [Working with Connectors via Tooling](https://docs.wso2.com/display/EI640/Working+with+Connectors+via+Tooling).
