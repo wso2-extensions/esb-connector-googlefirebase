@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+~ Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+~
+~ WSO2 Inc. licenses this file to you under the Apache License,
+~ Version 2.0 (the "License"); you may not use this file except
+~ in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~    http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing,
+~ software distributed under the License is distributed on an
+~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~ KIND, either express or implied.  See the License for the
+~ specific language governing permissions and limitations
+~ under the License.
+-->
+
+<proxy xmlns="http://ws.apache.org/ns/synapse"
+       name="googlefirebase"
+       startOnLoad="true"
+       statistics="disable"
+       trace="disable"
+       transports="http,https">
+    <target>
+        <inSequence>
+            <property name="accountType" expression="json-eval($.accountType)"/>
+            <property name="projectId" expression="json-eval($.projectId)"/>
+            <property name="privateKeyId" expression="json-eval($.privateKeyId)"/>
+            <property name="privateKey" expression="json-eval($.privateKey)"/>
+            <property name="clientEmail" expression="json-eval($.clientEmail)"/>
+            <property name="clientId" expression="json-eval($.clientId)"/>
+            <property name="authUri" expression="json-eval($.authUri)"/>
+            <property name="tokenUri" expression="json-eval($.tokenUri)"/>
+            <property name="authProviderCertUrl" expression="json-eval($.authProviderCertUrl)"/>
+            <property name="clientCertUrl" expression="json-eval($.clientCertUrl)"/>
+            <property name="topicName" expression="json-eval($.topicName)"/>
+            <property name="tokenList" expression="json-eval($.tokenList)"/>
+            <property name="messagingType" expression="json-eval($.messagingType)"/>
+            <property name="dryRunMode" expression="json-eval($.dryRunMode)"/>
+            <property name="registrationToken" expression="json-eval($.registrationToken)"/>
+            <property name="condition" expression="json-eval($.condition)"/>
+            <property name="dataFieldsOfMessage" expression="json-eval($.dataFieldsOfMessage)"/>
+            <property name="notificationTitle" expression="json-eval($.notificationTitle)"/>
+            <property name="notificationBody" expression="json-eval($.notificationBody)"/>
+            <property name="androidPriority" expression="json-eval($.androidPriority)"/>
+            <property name="timeToLiveDuration" expression="json-eval($.timeToLiveDuration)"/>
+            <property name="restrictedPackageName" expression="json-eval($.restrictedPackageName)"/>
+            <property name="collapseKey" expression="json-eval($.collapseKey)"/>
+            <property name="dataFieldsOfAndroidConfig" expression="json-eval($.dataFieldsOfAndroidConfig)"/>
+            <property name="androidNotificationTitle" expression="json-eval($.androidNotificationTitle)"/>
+            <property name="androidNotificationBody" expression="json-eval($.androidNotificationBody)"/>
+            <property name="androidClickAction" expression="json-eval($.androidClickAction)"/>
+            <property name="androidIcon" expression="json-eval($.androidIcon)"/>
+            <property name="androidColor" expression="json-eval($.androidColor)"/>
+            <property name="androidTag" expression="json-eval($.androidTag)"/>
+            <property name="androidSound" expression="json-eval($.androidSound)"/>
+            <property name="androidTitleLocalizationKey" expression="json-eval($.androidTitleLocalizationKey)"/>
+            <property name="androidBodyLocalizationKey" expression="json-eval($.androidBodyLocalizationKey)"/>
+            <property name="androidTitleLocalizationArgs" expression="json-eval($.androidTitleLocalizationArgs)"/>
+            <property name="androidBodyLocalizationArgs" expression="json-eval($.androidBodyLocalizationArgs)"/>
+            <property name="apnsHeaders" expression="json-eval($.apnsHeaders)"/>
+            <property name="apnsCustomData" expression="json-eval($.apnsCustomData)"/>
+            <property name="apnsBadge" expression="json-eval($.apnsBadge)"/>
+            <property name="apnsSound" expression="json-eval($.apnsSound)"/>
+            <property name="apnsContentAvailable" expression="json-eval($.apnsContentAvailable)"/>
+            <property name="apnsCategory" expression="json-eval($.apnsCategory)"/>
+            <property name="apnsThreadId" expression="json-eval($.apnsThreadId)"/>
+            <property name="apnsAlertTitle" expression="json-eval($.apnsAlertTitle)"/>
+            <property name="apnsAlertBody" expression="json-eval($.apnsAlertBody)"/>
+            <property name="webPushHeaders" expression="json-eval($.webPushHeaders)"/>
+            <property name="webPushData" expression="json-eval($.webPushData)"/>
+            <property name="webPushNotificationTitle" expression="json-eval($.webPushNotificationTitle)"/>
+            <property name="webPushNotificationBody" expression="json-eval($.webPushNotificationBody)"/>
+            <property name="webPushNotificationIcon" expression="json-eval($.webPushNotificationIcon)"/>
+            <property name="webPushNotificationBadge" expression="json-eval($.webPushNotificationBadge)"/>
+            <property name="webPushNotificationImage" expression="json-eval($.webPushNotificationImage)"/>
+            <property name="webPushNotificationLanguage" expression="json-eval($.webPushNotificationLanguage)"/>
+            <property name="webPushNotificationTag" expression="json-eval($.webPushNotificationTag)"/>
+            <property name="webPushNotificationDirection" expression="json-eval($.webPushNotificationDirection)"/>
+            <property name="webPushNotificationRenotify" expression="json-eval($.webPushNotificationRenotify)"/>
+            <property name="webPushNotificationInteraction" expression="json-eval($.webPushNotificationInteraction)"/>
+            <property name="webPushNotificationSilent" expression="json-eval($.webPushNotificationSilent)"/>
+            <property name="webPushNotificationTimestamp" expression="json-eval($.webPushNotificationTimestamp)"/>
+            <property name="webPushNotificationVibrate" expression="json-eval($.webPushNotificationVibrate)"/>
+            <googlefirebase.init>
+                <accountType>{$ctx:accountType}</accountType>
+                <projectId>{$ctx:projectId}</projectId>
+                <privateKeyId>{$ctx:privateKeyId}</privateKeyId>
+                <privateKey>{$ctx:privateKey}</privateKey>
+                <clientEmail>{$ctx:clientEmail}</clientEmail>
+                <clientId>{$ctx:clientId}</clientId>
+                <authUri>{$ctx:authUri}</authUri>
+                <tokenUri>{$ctx:tokenUri}</tokenUri>
+                <authProviderCertUrl>{$ctx:authProviderCertUrl}</authProviderCertUrl>
+                <clientCertUrl>{$ctx:clientCertUrl}</clientCertUrl>
+            </googlefirebase.init>
+            <switch source="get-property('transport', 'Action')">
+                <case regex="urn:sendMessage">
+                    <googlefirebase.sendMessage>
+                        <messagingType>{$ctx:messagingType}</messagingType>
+                        <topicName>{$ctx:topicName}</topicName>
+                        <dryRunMode>{$ctx:dryRunMode}</dryRunMode>
+                        <registrationToken>{$ctx:registrationToken}</registrationToken>
+                        <condition>{$ctx:condition}</condition>
+                        <dataFieldsOfMessage>{$ctx:dataFieldsOfMessage}</dataFieldsOfMessage>
+                        <notificationTitle>{$ctx:notificationTitle}</notificationTitle>
+                        <notificationBody>{$ctx:notificationBody}</notificationBody>
+                        <androidPriority>{$ctx:androidPriority}</androidPriority>
+                        <timeToLiveDuration>{$ctx:timeToLiveDuration}</timeToLiveDuration>
+                        <restrictedPackageName>{$ctx:restrictedPackageName}</restrictedPackageName>
+                        <collapseKey>{$ctx:collapseKey}</collapseKey>
+                        <dataFieldsOfAndroidConfig>{$ctx:dataFieldsOfAndroidConfig}</dataFieldsOfAndroidConfig>
+                        <androidNotificationTitle>{$ctx:androidNotificationTitle}</androidNotificationTitle>
+                        <androidNotificationBody>{$ctx:androidNotificationBody}</androidNotificationBody>
+                        <androidClickAction>{$ctx:androidClickAction}</androidClickAction>
+                        <androidIcon>{$ctx:androidIcon}</androidIcon>
+                        <androidColor>{$ctx:androidColor}</androidColor>
+                        <androidTag>{$ctx:androidTag}</androidTag>
+                        <androidSound>{$ctx:androidSound}</androidSound>
+                        <androidTitleLocalizationKey>{$ctx:androidTitleLocalizationKey}</androidTitleLocalizationKey>
+                        <androidBodyLocalizationKey>{$ctx:androidBodyLocalizationKey}</androidBodyLocalizationKey>
+                        <androidTitleLocalizationArgs>{$ctx:androidTitleLocalizationArgs}</androidTitleLocalizationArgs>
+                        <androidBodyLocalizationArgs>{$ctx:androidBodyLocalizationArgs}</androidBodyLocalizationArgs>
+                        <apnsHeaders>{$ctx:apnsHeaders}</apnsHeaders>
+                        <apnsCustomData>{$ctx:apnsCustomData}</apnsCustomData>
+                        <apnsBadge>{$ctx:apnsBadge}</apnsBadge>
+                        <apnsSound>{$ctx:apnsSound}</apnsSound>
+                        <apnsContentAvailable>{$ctx:apnsContentAvailable}</apnsContentAvailable>
+                        <apnsCategory>{$ctx:apnsCategory}</apnsCategory>
+                        <apnsThreadId>{$ctx:apnsThreadId}</apnsThreadId>
+                        <apnsAlertTitle>{$ctx:apnsAlertTitle}</apnsAlertTitle>
+                        <apnsAlertBody>{$ctx:apnsAlertBody}</apnsAlertBody>
+                        <webPushHeaders>{$ctx:webPushHeaders}</webPushHeaders>
+                        <webPushData>{$ctx:webPushData}</webPushData>
+                        <webPushNotificationTitle>{$ctx:webPushNotificationTitle}</webPushNotificationTitle>
+                        <webPushNotificationBody>{$ctx:webPushNotificationBody}</webPushNotificationBody>
+                        <webPushNotificationIcon>{$ctx:webPushNotificationIcon}</webPushNotificationIcon>
+                        <webPushNotificationBadge>{$ctx:webPushNotificationBadge}</webPushNotificationBadge>
+                        <webPushNotificationImage>{$ctx:webPushNotificationImage}</webPushNotificationImage>
+                        <webPushNotificationLanguage>{$ctx:webPushNotificationLanguage}</webPushNotificationLanguage>
+                        <webPushNotificationTag>{$ctx:webPushNotificationTag}</webPushNotificationTag>
+                        <webPushNotificationDirection>{$ctx:webPushNotificationDirection}</webPushNotificationDirection>
+                        <webPushNotificationRenotify>{$ctx:webPushNotificationRenotify}</webPushNotificationRenotify>
+                        <webPushNotificationInteraction>{$ctx:webPushNotificationInteraction}</webPushNotificationInteraction>
+                        <webPushNotificationSilent>{$ctx:webPushNotificationSilent}</webPushNotificationSilent>
+                        <webPushNotificationTimestamp>{$ctx:webPushNotificationTimestamp}</webPushNotificationTimestamp>
+                        <webPushNotificationVibrate>{$ctx:webPushNotificationVibrate}</webPushNotificationVibrate>
+                    </googlefirebase.sendMessage>
+                </case>
+                <case regex="urn:subscribeToTopic">
+                    <googlefirebase.subscribeToTopic>
+                        <topicName>{$ctx:topicName}</topicName>
+                        <tokenList>{$ctx:tokenList}</tokenList>
+                    </googlefirebase.subscribeToTopic>
+                </case>
+                <case regex="urn:unsubscribeFromTopic">
+                    <googlefirebase.unsubscribeFromTopic>
+                        <topicName>{$ctx:topicName}</topicName>
+                        <tokenList>{$ctx:tokenList}</tokenList>
+                    </googlefirebase.unsubscribeFromTopic>
+                </case>
+            </switch>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <log/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
+</proxy>

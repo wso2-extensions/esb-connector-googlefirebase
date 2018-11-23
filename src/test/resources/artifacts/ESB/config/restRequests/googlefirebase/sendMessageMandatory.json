@@ -1,0 +1,14 @@
+{
+  "accountType": "%s(accountType)",
+  "projectId": "%s(projectId)",
+  "privateKeyId": "%s(privateKeyId)",
+  "privateKey": %s(privateKey),
+  "clientEmail": "%s(clientEmail)",
+  "clientId": "%s(clientId)",
+  "authUri": "%s(authUri)",
+  "tokenUri": "%s(tokenUri)",
+  "authProviderCertUrl": "%s(authProviderCertUrl)",
+  "clientCertUrl": "%s(clientCertUrl)",
+  "messagingType": "%s(messagingType)",
+  "registrationToken": "%s(registrationToken)"
+}
