@@ -1,7 +1,7 @@
 # Google Firebase EI Connector
 
 The Google Firebase [connector](https://docs.wso2.com/display/EI640/Working+with+Connectors) allows you to integrate your own backend services with Firebase Cloud Messaging (FCM).
-It handles authenticating with Firebase servers while facilitating sending messages and managing topic subscriptions. Using FCM, you can notify a client app that new email or other data is available to sync.
+It handles authenticating with Firebase servers while facilitating sending messages and managing topic subscriptions. Using FCM, you can notify a client app that a new email or other data are available to sync.
 It allows you to access the [Firebase Cloud Messaging (FCM)](https://firebase.google.com/docs/cloud-messaging/) through WSO2 EI.
 
 
@@ -13,26 +13,26 @@ It allows you to access the [Firebase Cloud Messaging (FCM)](https://firebase.go
 
 ## Getting started
 
-###### Download and install the connector
+###### Downloading and installing the connector
 
 1. Download the connector from [WSO2 Store](https://store.wso2.com/store/assets/esbconnector) by clicking the Download Connector button.
-2. Then you can follow this [Documentation](https://docs.wso2.com/display/EI640/Working+with+Connectors+via+the+Management+Console) to add and enable the connector via the Management Console in your EI instance.
-3. For more information on using connectors and their operations in your EI configurations, see [Using a Connector](https://docs.wso2.com/display/EI640/Using+a+Connector).
-4. If you want to work with connectors via EI tooling, see [Working with Connectors via Tooling](https://docs.wso2.com/display/EI640/Working+with+Connectors+via+Tooling).
+2. Follow this [Documentation](https://docs.wso2.com/display/EI640/Working+with+Connectors+via+the+Management+Console) to add and enable the connector via the Management Console of your WSO2 EI instance.
+3. For more information on using connectors and their operations within your EI configurations, see [Using a Connector](https://docs.wso2.com/display/EI640/Using+a+Connector).
+4. If you want to work with connectors via WSO2 EI tooling, see [Working with Connectors via Tooling](https://docs.wso2.com/display/EI640/Working+with+Connectors+via+Tooling).
 
 ###### Configuring the connector operations
 
-To get started with google firebase connector and their operations, see [Configuring Google Firebase Operations](docs/config.md).
+To get started with Google Firebase connector and their operations, see [Configuring Google Firebase Operations](docs/config.md).
 
-## Building From the Source
+## Building from the Source
 
-If you want to build Google Firebase connector from the source code:
+If you want to build the Google Firebase connector from the source code:
 
-1. Get a clone or download the source from [github](https://github.com/wso2-extensions/esb-connector-googlefirebase).
-2. Run the following Maven command from the `esb-connector-googlefirebase` directory: `mvn clean install`.
-3. Google Firebase connector zip will be created under `esb-connector-googlefirebase/target` directory.
+1. Get a clone or download the source from [GitHub](https://github.com/wso2-extensions/esb-connector-googlefirebase).
+2. Navigate to the the `esb-connector-googlefirebase` directory and execute the following Maven command: `mvn clean install`.
+This creates a ZIP file of the Google Firebase connector under the `esb-connector-googlefirebase/target` directory.
 
-## How You Can Contribute
+## Contributing to WSO2 Extensions
 
 As an open source project, WSO2 extensions welcome contributions from the community.
-Check the [issue tracker](https://github.com/wso2-extensions/esb-connector-googlefirebase/issues) for open issues that interest you. We look forward to receiving your contributions.
+Check the [issue tracker](https://github.com/wso2-extensions/esb-connector-googlefirebase/issues) for open issues that interest you. We look forward to your contributions.
