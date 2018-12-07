@@ -1,4 +1,4 @@
-# Working with Firebase Topic Subscriptions
+# Working with Firebase topic subscriptions
 
 [[Overview](#overview)]  [[Operation details](#operation-details)]  [[Sample configuration](#sample-configuration)]
 
@@ -8,8 +8,8 @@ The following operations allow you to work with topics. Click an operation name 
 
 | Operation        | Description |
 | ------------- |-------------|
-| [subscribeToTopic](#subscribe-to-a-topic)    | It allows you to subscribe devices to a topic. |
-| [unsubscribeFromTopic](#unsubscribe-from-a-topic)    | It allows you to unsubscribe devices from a topic. |
+| [subscribeToTopic](#subscribe-to-a-topic)    | Allows you to subscribe devices to a topic. |
+| [unsubscribeFromTopic](#unsubscribe-from-a-topic)    | Allows you to unsubscribe devices from a topic. |
 
 
 ### Operation details
