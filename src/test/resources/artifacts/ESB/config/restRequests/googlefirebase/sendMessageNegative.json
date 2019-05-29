@@ -2,7 +2,7 @@
   "accountType": "%s(accountType)",
   "projectId": "%s(projectId)",
   "privateKeyId": "%s(privateKeyId)",
-  "privateKey": %s(privateKey),
+  "privateKey": "%s(privateKey)",
   "clientEmail": "%s(clientEmail)",
   "clientId": "%s(clientId)",
   "authUri": "%s(authUri)",
