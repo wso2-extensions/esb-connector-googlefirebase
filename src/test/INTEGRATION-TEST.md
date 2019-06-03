@@ -10,14 +10,14 @@
 ### Tested Platforms:
 
     - Ubuntu 16.04
-    - WSO2 EI 6.4.0
+    - WSO2 EI 6.5.0
     - java 1.8
 
 
 ### Steps to follow in setting integration test.
 
 
- 1. Download EI 6.4.0  by navigating to the following [URL](http://wso2.com/products/enterprise-service-bus/#).
+ 1. Download EI 6.5.0  by navigating to the following [URL](http://wso2.com/products/enterprise-service-bus/#).
  2. Unzip the EI pack.
  3. Download following jars [firebase-admin-6.5.0.jar](https://mvnrepository.com/artifact/com.google.firebase/firebase-admin/6.5.0), [google-auth-library-credentials-0.11.0.jar](https://mvnrepository.com/artifact/com.google.auth/google-auth-library-credentials/0.11.0), [google-auth-library-oauth2-http-0.11.0.jar](https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http/0.11.0), [api-common-1.7.0.jar](https://mvnrepository.com/artifact/com.google.api/api-common/1.7.0), place those into <EI_HOME>/lib folder and compress the EI pack.
  4. Place the updated EI 6.4.0 zip to the location `Connector_Home/repository/`
