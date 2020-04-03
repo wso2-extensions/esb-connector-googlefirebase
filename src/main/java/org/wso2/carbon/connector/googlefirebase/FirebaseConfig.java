@@ -80,19 +80,31 @@ public class FirebaseConfig extends AbstractConnector implements Connector {
                     log.debug("Started to initialize the firebase admin sdk with the provided firebase service " +
                             "account's credentials");
                 }
+                log.info("Started to initialize the firebase admin sdk with the provided firebase service " +
+                        "account's credentials");
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setDatabaseUrl(FirebaseConstants.HTTPS + credentials.get(FirebaseConstants.API_PROJECT_ID)
                                 + FirebaseConstants.FIREBASE_IO)
                         .setCredentials(GoogleCredentials.fromStream(new ByteArrayInputStream(
-                                credentials.toString().getBytes())))
+                                credentials.toString().replaceAll("\\\\n", "\\n").getBytes())))
                         .build();
+                /*
+                 * The SDK allows to create multiple apps. We need only one app to work. When an app is added,
+                 * it is added under the name "default". We just need to delete that before initializing again.
+                 */
+                if (!FirebaseApp.getApps().isEmpty()) {
+                    FirebaseApp existingApp = FirebaseApp.getApps().get(0);
+                    if (existingApp != null) {
+                        existingApp.delete();
+                    }
+                }
                 firebaseApp = FirebaseApp.initializeApp(options);
                 if (log.isDebugEnabled()) {
                     log.debug("Successfully initialized the firebase admin sdk with the provided firebase service " +
                             "account's credentials");
                 }
-            } catch (IOException e) {
-                FirebaseUtils.handleException("Failed to read service account credentials from stream. ", e);
+            } catch (Exception e) {
+                FirebaseUtils.handleException("Failed to initialize Firebase SDK ", e);
             }
         }
     }
