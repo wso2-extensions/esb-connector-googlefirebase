@@ -1,0 +1,13 @@
+{
+    "name": "Google Firebase",
+    "owner": "WSO2",
+    "category": "Other",
+    "documentationUrl": "https://ei.docs.wso2.com/en/latest/micro-integrator/references/connectors/google-firebase-connector/google-firebase-overview/",
+    "description": "The Google Firebase connector allows you to integrate your own back-end services with Firebase Cloud Messaging (FCM). It handles authenticating with Firebase servers while facilitating sending messages and managing topic subscriptions.",
+    "status": "Active",
+    "labels": [
+        "Application",
+        "Google"
+    ],
+    "releases": []
+}
