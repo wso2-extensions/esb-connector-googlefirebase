@@ -6,8 +6,18 @@
     "description": "The Google Firebase connector allows you to integrate your own back-end services with Firebase Cloud Messaging (FCM). It handles authenticating with Firebase servers while facilitating sending messages and managing topic subscriptions.",
     "status": "Active",
     "labels": [
-        "Application",
-        "Google"
+        "google",
+        "firebase"
     ],
-    "releases": []
+    "releases": [
+        {
+            "tagName": "v1.0.2",
+            "products": [
+                "EI 7.0.x",
+                "EI 6.6.0",
+                "EI 6.5.0"
+            ],
+            "isHidden": false
+        }
+    ]
 }
