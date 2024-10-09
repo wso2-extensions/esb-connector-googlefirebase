@@ -7,7 +7,7 @@
     "status": "Active",
     "labels": [
         "google",
-        "firebase"
+        "database"
     ],
     "releases": [
         {
