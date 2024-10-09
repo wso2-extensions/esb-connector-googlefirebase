@@ -7,13 +7,16 @@
     "status": "Active",
     "labels": [
         "google",
-        "firebase"
+        "database"
     ],
     "releases": [
         {
             "tagName": "v1.0.2",
             "products": [
-                "MI 4.x.x"
+                "MI 4.3.0",
+                "MI 4.2.0",
+                "MI 4.1.0",
+                "MI 4.0.0"
             ],
             "isHidden": false
         }
